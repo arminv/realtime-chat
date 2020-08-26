@@ -18,7 +18,7 @@ const typeDefs = `
     }
 
     type Subscription {
-      messages: [Message!]
+        messages: [Message!]
     }
 `;
 
@@ -41,7 +41,7 @@ const resolvers = {
       return id;
     },
   },
-  Subscription: {
+  Subscription: { 
     messages: {
       subscribe: (parent, args, { pubsub }) => {
         const channel = Math.random().toString(36).slice(2, 15);

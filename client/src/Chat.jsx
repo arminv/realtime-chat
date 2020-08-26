@@ -5,18 +5,27 @@ import {
   InMemoryCache,
   ApolloProvider,
   gql,
-  useQuery,
+  useSubscription,
   useMutation,
 } from '@apollo/client';
+import { WebScketLink, WebSocketLink } from '@apollo/client/link/ws';
 import { Container, Row, Col, FormInput, Button } from 'shards-react';
 
+const link = new WebSocketLink({
+  uri: 'ws://localhost:4000/',
+  options: {
+    reconnect: true,
+  },
+});
+
 const client = new ApolloClient({
+  link,
   uri: 'http://localhost:4000/',
   cache: new InMemoryCache(),
 });
 
 const GET_MESSAGES = gql`
-  query {
+  subscription {
     messages {
       id
       content
@@ -32,9 +41,9 @@ const POST_MESSAGE = gql`
 `;
 
 const Messages = ({ user }) => {
-  const { data } = useQuery(GET_MESSAGES, {
-    // NOTE: 'pollInterval' allows for re-fetching the same query after a certain amount of time has passed:
-    pollInterval: 500,
+  const { data } = useSubscription(GET_MESSAGES, {
+    // NOTE: 'pollInterval' allows for re-fetching the same query after a certain amount of time has passed (with useQuery):
+    // pollInterval: 500,
   });
   if (!data) {
     return null;
